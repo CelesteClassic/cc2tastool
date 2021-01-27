@@ -11,4 +11,6 @@ Usage:
 
 Hud: top line is player.x/y, player.speed_x/y, player.remainder_x/y (this is also printed to console), bottom line: number of states and memory usage (this number must stay below 2048 or tool crashes, thanks zep)
 
+I also set level_index manually at the end
+
 ping @avi on discord if something's wrong
