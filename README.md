@@ -7,7 +7,7 @@ Simple prototype of a TAS Tool for Celeste Classic 2. Functions the same way as 
 Usage:
 
 * To advance a frame, hold the buttons you want pressed and release them, or press space for no buttons, or hold Shift to input in real time (use this to skip intros and such)
-* Press Q to enable/disable saving states
+* Press Q to enable/disable saving a state every frame
 * Press Backspace to undo a frame
 * Press O to dump the button states from recorded states to cc2tas.p8l file (let me know if you need this in a different format for something)
 
