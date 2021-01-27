@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/db0z/cc2tastool/main/preview.gif">
 
-Simple prototype of a TAS Tool for Celeste Classic 2. Functions the same way as a mod. Based on smalleste2 by @Meep and uses free space to squeeze in some basic TAS tools. Only usable for short segments because it stores deep copies of states (the table `objects` specifically) in Lua RAM, which is limited; I made it ignore some (unnecessary) objects to save enough memory for at least 200 frames in the most intense levels.
+Simple prototype of a TAS Tool for Celeste Classic 2. Functions the same way as a mod. Based on smalleste2 by @Meep and @gonengazit and uses free space to squeeze in some basic TAS tools. Only usable for short segments because it stores deep copies of states (the table `objects` specifically) in Lua RAM, which is limited; I made it ignore some (unnecessary) objects to save enough memory for at least 200 frames in the most intense levels.
 
 Usage:
 
