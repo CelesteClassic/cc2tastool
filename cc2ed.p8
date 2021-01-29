@@ -1876,6 +1876,7 @@ end
 function restart_level()
 	_restart_level()
 	nocopy,current_player={},getplayer()
+	level_intro=0
 
 	--set up nocopy to ignore static objects
 	for o in all(objects) do
