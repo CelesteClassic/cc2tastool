@@ -59,6 +59,8 @@ showoverlays=true
 [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]],
 ```
 
+Note: if you want to comment out a segment, use `//`, `--` doesn't comment out the comma for some reason.
+
 `showoverlays` enables/disables the same overlays as in cc2ed.p8.
 
 You can also use these controls during playback:
