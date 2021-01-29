@@ -1,13 +1,72 @@
 pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
--- celeste2
--- exok games
+--config
+
+conf_level=1
+conf_player=nil
+-->8
+--misc functions
+
+function showbtns(x,y,btns)
+	rectfill(x,y,x+3,y+4,0)
+	rectfill(x+1,y+1,x+3,y+3,1)
+	--le token save
+	local col,dx,dy={8,11,13,10,12,14},{1,3,2,2,1,3},{3,3,2,3,1,1}
+	for i=1,6 do
+		if(btns&(1<<(i-1))!=0) pset(x+dx[i],y+dy[i],col[i])
+	end
+end
+
+function getplayer()
+	for o in all(objects) do
+		if(o.base==player) return o
+	end
+end
+
+function join(t)
+	local s=t[1]
+	for i=2,#t do s=s.." "..t[i] end
+	return s
+end
+
+function copyvars(s,d,keys)
+	for k in all(keys) do
+		d[k]=s[k]
+	end
+	return d
+end
+
+function printvars(t,keys)
+	if(not t) return "[none]"
+	local s="{"
+	for k in all(keys) do
+		s=s..k.."="..t[k]..","
+	end
+	return s.."}"
+end
+
+function sprint(s,x,y,c)
+	print(s,x+1,y+1,0)
+	print(s,x,y,c)
+end
+
+function rprint(s,x,...)
+	sprint(s,x-#tostr(s)*4+1,...)
+end
+
+function hprint(s)
+	printh(s) printh(s,"seglog")
+end
+
+-->8
+--smalleste2 (editor version)
+--some gfx cut
 
 level_index,level_intro=0,0
 
 function game_start()
-  
+
   -- reset state
   snow,clouds,
   freeze_time,frames,seconds,minutes,shake,sfx_timer,
@@ -20,10 +79,10 @@ function game_start()
   {},0,
   0,0
 
-  for i=0,25 do 
-    add(snow,{x=rnd(132),y=rnd(132)})
-    add(clouds,{x=rnd(132),y=rnd(132),s=16+rnd(32)})
-  end
+--   for i=0,25 do
+--     add(snow,{x=rnd(132),y=rnd(132)})
+--     add(clouds,{x=rnd(132),y=rnd(132),s=16+rnd(32)})
+--   end
 
   -- goto titlescreen or level
   if level_index==0 then
@@ -103,14 +162,14 @@ function _draw()
     print_center("maddy thorson",87,5)
     print_center("noel berry",94,5)
     print_center("lena raine",101,5)
-    draw_snow()
+--     draw_snow()
     return
   end
 
   if level_intro>0 then
     cls()
     camera()
-    draw_time(4,4)
+--     draw_time(4,4)
     if level_index~=8 then
       print_center("level "..(level_index-2),56, 7)
     end
@@ -128,7 +187,7 @@ function _draw()
   cls(level and level.bg or 0)
 
   -- draw clouds
-  draw_clouds(1,0,0,1,1,level.clouds or 13,#clouds)
+--   draw_clouds(1,0,0,1,1,level.clouds or 13,#clouds)
 
   -- columns
   if level.columns then
@@ -173,14 +232,14 @@ function _draw()
   if p then p:draw() end
 
   -- draw snow
-  draw_snow()
+--   draw_snow()
 
   -- draw fg clouds
-  if level.fogmode then
-    if level.fogmode==1 then fillp(0b0101101001011010.1) end
-    draw_clouds(1.25,0,level.height*8+1,1,0,7,#clouds-10)
-    fillp()
-  end
+--   if level.fogmode then
+--     if level.fogmode==1 then fillp(0b0101101001011010.1) end
+--     draw_clouds(1.25,0,level.height*8+1,1,0,7,#clouds-10)
+--     fillp()
+--   end
 
   camera()
 
@@ -200,7 +259,7 @@ function _draw()
 
   -- game timer
   if infade<45 then
-    draw_time(4,4)
+--     draw_time(4,4)
   end
 
   camera(camera_x,camera_y)
@@ -216,29 +275,29 @@ function two_digit_str(x)
   return x<10 and "0"..x or x
 end
 
-function draw_clouds(scale,ox,oy,sx,sy,color,count)
-  for i=1,count do
-    local c=clouds[i]
-    local s=c.s*scale
-    local x,y=ox+(camera_x+(c.x-camera_x*0.9)%(128+s)-s/2)*sx,oy+(camera_y+(c.y-camera_y*0.9)%(128+s/2))*sy
-    clip(x-s/2-camera_x,y-s/2-camera_y,s,s/2)
-    circfill(x,y,s/3,color)
-    if i%2==0 then
-      circfill(x-s/3,y,s/5,color)
-      circfill(x+s/3,y,s/6,color)
-    end
-    c.x+=(4-i%4)*0.25
-  end
-  clip(0,0,128,128)
-end
+-- function draw_clouds(scale,ox,oy,sx,sy,color,count)
+--   for i=1,count do
+--     local c=clouds[i]
+--     local s=c.s*scale
+--     local x,y=ox+(camera_x+(c.x-camera_x*0.9)%(128+s)-s/2)*sx,oy+(camera_y+(c.y-camera_y*0.9)%(128+s/2))*sy
+--     clip(x-s/2-camera_x,y-s/2-camera_y,s,s/2)
+--     circfill(x,y,s/3,color)
+--     if i%2==0 then
+--       circfill(x-s/3,y,s/5,color)
+--       circfill(x+s/3,y,s/6,color)
+--     end
+--     c.x+=(4-i%4)*0.25
+--   end
+--   clip(0,0,128,128)
+-- end
 
-function draw_snow()
-  for i,s in pairs(snow) do
-    circfill(camera_x+(s.x-camera_x*0.5)%132-2,camera_y+(s.y-camera_y*0.5)%132,i%2,7)
-    s.x+=4-i%4
-    s.y+=sin(time()*0.25+i*0.1)
-  end
-end
+-- function draw_snow()
+--   for i,s in pairs(snow) do
+--     circfill(camera_x+(s.x-camera_x*0.5)%132-2,camera_y+(s.y-camera_y*0.5)%132,i%2,7)
+--     s.x+=4-i%4
+--     s.y+=sin(time()*0.25+i*0.1)
+--   end
+-- end
 
 function print_center(text,y,c)
   ?text,64-2*#text-0.5,y,c
@@ -453,7 +512,7 @@ function goto_level(index)
     level_intro=60
   end
 
-  if level_index==2 then 
+  if level_index==2 then
     psfx(17,8,16)
   end
 
@@ -467,7 +526,7 @@ function goto_level(index)
     current_music=level.music
     music(level.music)
   end
-  
+
   -- load level contents
   restart_level()
 end
@@ -497,8 +556,7 @@ end
 
 -- gets the tile at the given location from the loaded level
 function tile_at(x,y)
-  if (x<0 or y<0 or x>=level.width or y>=level.height) then return 0 end
-  return peek(0x4300+x+y*level.width)
+  return x<0 or y<0 or x>=level.width or y>=level.height and 0 or peek(0x4300+x+y*level.width)
 end
 
 input_x,input_jump_pressed,input_grapple_pressed,axis_x_value=0,0,0,0
@@ -560,7 +618,7 @@ object = {
  freeze=0
 }
 
-function object.move_x(self,x,on_collide) 
+function object.move_x(self,x,on_collide)
   self.remainder_x+=x
   local mx=flr(self.remainder_x+0.5)
   self.remainder_x-=mx
@@ -584,7 +642,7 @@ function object.move_y(self,y,on_collide)
   self.remainder_y+=y
   local my=flr(self.remainder_y+0.5)
   self.remainder_y-=my
-  
+
   local total,mys=my,sgn(my)
   local mys=sgn(my)
   while my~=0
@@ -831,7 +889,7 @@ springboard.grapple_mode,springboard.holdable,springboard.thrown_timer=3,true,0
 function springboard.update(self)
   if not self.held then
     self.thrown_timer-=1
-    --friction and gravity  
+    --friction and gravity
     if self:check_solid(0,1) then
       self.speed_x=approach(self.speed_x,0,1)
     else
@@ -1080,12 +1138,12 @@ function player.bounce(self,x,y)
   self.auto_var_jump=
   0,-4,-4,4,0,true
   self.speed_x+=sgn(self.x-x)*0.5
-  self:move_y(y-self.y) 
+  self:move_y(y-self.y)
 end
 
 function player.spring(self,y)
   consume_jump_press()
-  if input_jump then 
+  if input_jump then
     psfx(17,2,3)
   else
     psfx(17,0,2)
@@ -1132,9 +1190,10 @@ function player.grapple_jump(self)
   self.auto_var_jump,
   self.grapple_retract=
   0,0,-3,-3,4,false,true
-  if abs(self.speed_x)>4 then
-    self.speed_x=sgn(self.speed_x)*4
-  end
+  self.speed_x=mid(-4,self.speed_x,4)--sgn(self.speed_x)*min(4,abs(self.speed_x))
+  --if abs(self.speed_x)>4 then
+  --  self.speed_x=sgn(self.speed_x)*4
+  --end
   self:move_y(self.grapple_jump_grace_y-self.y)
 end
 
@@ -1145,7 +1204,7 @@ end
 function player.die(self)
   self.state,freeze_time,shake=99,2,5
   death_count+=1
-  psfx(14, 16, 16, 120)
+  psfx(14,16,16,120)
 end
 
 --[[
@@ -1225,7 +1284,7 @@ function player.update(self)
   if self.grapple_retract then
     self.grapple_x,self.grapple_y=approach(self.grapple_x,self.x,12),approach(self.grapple_y,self.y-3,6)
     if self.grapple_x==self.x and self.grapple_y==self.y-3 then
-      self.grapple_retract = false
+      self.grapple_retract=false
     end
   end
 
@@ -1269,7 +1328,7 @@ function player.update(self)
       else
         self.t_var_jump=0
       end
-    end   
+    end
 
     -- jumping
     if input_jump_pressed>0 then
@@ -1322,12 +1381,14 @@ function player.update(self)
     -- grapple movement and hitting stuff
     for i=1,min(64-abs(self.grapple_x-self.x),6) do
       local hit=self:grapple_check(self.grapple_x+self.grapple_dir,self.grapple_y)
-      if hit==0 then
-        hit=self:grapple_check(self.grapple_x+self.grapple_dir,self.grapple_y-1)
+      for i=-1,1,2 do
+        if hit==0 then
+          hit=self:grapple_check(self.grapple_x+self.grapple_dir,self.grapple_y+i)
+        end
       end
-      if hit==0 then
-        hit=self:grapple_check(self.grapple_x+self.grapple_dir,self.grapple_y+1)
-      end
+      --if hit==0 then
+      --  hit=self:grapple_check(self.grapple_x+self.grapple_dir,self.grapple_y+1)
+      --end
 
       local mode=self.grapple_hit and self.grapple_hit.grapple_mode or 0
 
@@ -1367,7 +1428,7 @@ function player.update(self)
 
   elseif self.state==11 then
     -- grapple attached state
-    
+
     -- start boost
     if not self.grapple_boost then
       self.grapple_boost,self.speed_x=true,self.grapple_dir*8
@@ -1408,7 +1469,7 @@ function player.update(self)
       self.grapple_retract=
       0,2,self.y,true
       self.facing*=-1
-      self.speed_x=abs(self.speed_x)>5 and sgn(self.speed_x)*5 or abs(self.speed_x)<=0.5 and 0 or self.speed_x
+      self.speed_x=abs(self.speed_x)<=0.5 and 0 or mid(-5,self.speed_x,5)--sgn(self.spd.x)*min(5,abs(self.speed_x))--abs(self.speed_x)>5 and sgn(self.speed_x)*5 or abs(self.speed_x)<=0.5 and 0 or self.speed_x
     end
 
     -- release if beyond grapple point
@@ -1418,7 +1479,7 @@ function player.update(self)
         self.t_grapple_jump_grace,self.grapple_jump_grace_y=3,self.y
       end
       --if abs(self.speed_x)>5 then
-        self.speed_x=sgn(self.speed_x)*min(5,abs(self.speed_x))
+      self.speed_x=sgn(self.speed_x)*min(5,abs(self.speed_x))
       --end
     end
 
@@ -1693,7 +1754,7 @@ function px9_decomp(x0,y0,src,vget,vset)
       end
     end
   end
-  -- bit cache is between 16 and 
+  -- bit cache is between 16 and
   -- 31 bits long with the next
   -- bit always aligned to the
   -- lsb of the fractional part
@@ -1771,168 +1832,176 @@ function px9_decomp(x0,y0,src,vget,vset)
   end
 end
 -->8
+--functions
+
+--every variable is init here
+--for tokenz
+nocopy,nocopy_sprs,
+states,record_on,btns,msgtime,
+__update,__draw,_restart_level,
+globals,
+playervars,
+level_index=
+{},{[36]=true,[37]=true,[46]=true},
+{},true,0,0,
+_update,_draw,restart_level,
+split"input_x,input_jump_pressed,input_grapple_pressed,axis_x_value,axis_x_turned,input_jump,input_grapple,freeze_time,infade,level_index,level_intro,camera_x,camera_y,show_score",
+split"x,y,speed_x,speed_y,remainder_x,remainder_y",
+conf_level
+
 --customized deepcopy function
 
---we will be ignoring:
---spikes and hook points
-nocopy_sprs={[36]=true,[37]=true,[46]=true}
---we'll put them in this table
-nocopy={}
-
 function deepcopy(orig,copies)
-	if(nocopy[orig]) return orig
-	
 	copies=copies or {}
-	local copy
-	if type(orig) == 'table' then
+	if not nocopy[orig] and type(orig)=='table' then
 		if copies[orig] then
-			copy=copies[orig]
+			return copies[orig]
 		else
-			copy={}
+			local copy={}
 			copies[orig]=copy
-			for orig_key,orig_value in next,orig,nil do
+			for orig_key,orig_value in next,orig do
 				copy[deepcopy(orig_key,copies)]=deepcopy(orig_value,copies)
 			end
-			--setmetatable(copy,deepcopy(getmetatable(orig),copies))
 			--only metatable used is
 			--`lookup`, so there's no
 			--need to copy it
 			setmetatable(copy,getmetatable(orig))
+			return copy
 		end
 	else -- number, string, boolean, etc
-		copy=orig
+		return orig
 	end
-	return copy
 end
 
---generating nocopy
-_restart_level=restart_level
 function restart_level()
 	_restart_level()
+	nocopy,current_player={},getplayer()
 
-	nocopy={}
+	--set up nocopy to ignore static objects
 	for o in all(objects) do
 		if nocopy_sprs[o.base.spr] then
 			nocopy[o]=true
 		end
-		--additionally, we'll ignore
-		--all types: object, player...
-		for k,t in pairs(types) do
-			nocopy[t]=true
+	end
+	--additionally, we'll ignore
+	--all types: player, checkpoint...
+	for k,t in pairs(types) do
+		nocopy[t]=true
+	end
+
+	if conf_player then
+		for k,v in pairs(conf_player) do
+			current_player[k]=v
 		end
 	end
+
+	--snap camera once
+	camera_modes[level.camera_mode](current_player.x,current_player.y)
+	snap_camera()
 end
 
---misc functions
-
-function showbtns(x,y,btns)
-	rectfill(x,y,x+3,y+5,0)
-	rectfill(x+1,y+1,x+3,y+5,1)
-	if(btns&1!=0) pset(x+1,y+4,8)
-	if(btns&2!=0) pset(x+3,y+4,11)
-	if(btns&4!=0) pset(x+2,y+3,7)
-	if(btns&8!=0) pset(x+2,y+5,10)
-	if(btns&16!=0) pset(x+1,y+1,12)
-	if(btns&32!=0) pset(x+3,y+1,14)
+function next_level()
+	level_finished=true
 end
 
-function getplayer()
-	for o in all(objects) do
-		if(o.base==player) return o
-	end
-end
-
+-->8
 --main
 
-poke(0x5f2d,1) --kbm support
-states={}
-state_btns={}
-states_on=false
+function logall()
+	hprint("level: "..conf_level)
+	hprint("begin: "..printvars(conf_player,playervars))
 
-_btn=btn
-function btn(n)
-	return (gamebtns&(1<<n))!=0
+	local s="[["
+	for st in all(states) do
+		s=s..st[2].." "
+	end
+	hprint(sub(s,1,#s-1).."]],")
+
+	hprint("end: "..printvars(current_player,playervars))
 end
 
-btns=0
+poke(0x5f2d,1) --kbm support
+--variables are in prev tab
 
-__update=_update
 function _update()
-	kbkey=stat(31)
-	--only read one key per frame
-	while stat(31)!="" do end
-	
-	if(kbkey=="q") states_on=not states_on
-	if kbkey=="o" then
-		local f="cc2tas"
-		printh("begin",f)
-		for i=1,#states do
-			printh(state_btns[states[i]],f)
-		end
-		printh("end",f)
-	end
-	
-	gamebtns=nil
-	if _btn(🅾️,1) then
-	 gamebtns=_btn()
-	elseif _btn()!=0 then
-		btns=btns|_btn()
-	elseif _btn()==0 and btns!=0 then
+	--read keyboard (one key is enough)
+	local kbkey
+	while stat(30) do kbkey=stat(31) end
+
+	local gamebtns=nil
+	if not record_on or kbkey==" " then
+		gamebtns=btn()
+	elseif btn()!=0 then
+		btns=btns|btn()&0xff
+	elseif btn()==0 and btns!=0 then
 		gamebtns=btns
 		btns=0
-	elseif kbkey==" " then
-		gamebtns=0
 	end
-	
-	if gamebtns then
-		if states_on then
-			local st=deepcopy(objects)
-			state_btns[st]=gamebtns
-			add(states,st)
+
+	if gamebtns and not level_finished then
+		poke(0x5f4c, gamebtns)
+		if record_on then
+			local o=deepcopy(objects)
+			add(states,{o,gamebtns,copyvars(_ENV,{},globals)})
 		end
 		__update()
 	elseif kbkey=="\b" then
 		if states[1] then
 			local st=deli(states,#states)
-		 state_btns[st]=nil
-		 --⬆️important for gc!
-		 objects=deepcopy(st)
+			objects=deepcopy(st[1])
+			copyvars(st[3],_ENV,globals)
 		end
+		level_finished=false
 	end
-	
-	pbtns=btns
+
+	--this is kinda important
+	current_player=getplayer()
+
+	record_on=record_on!=(kbkey=="\t")
+
+	if kbkey=="i" then
+		logall()
+		local s="[["
+		for st in all(states) do
+			s=s..st[2].." "
+		end
+		printh(sub(s,1,#s-1).."]],","@clip")
+		msg="copied inputs"
+		msgtime=60
+	elseif kbkey=="o" then
+		logall()
+		printh(printvars(current_player,playervars),"@clip")
+		msg="copied coordinates"
+		msgtime=60
+	end
 end
 
-__draw=_draw
 function _draw()
+	--no screenshake
+	shake=0
+
 	__draw()
+
 	camera()
-	
-	rectfill(0,0,128,5,0)
-	local plr=getplayer()
-	local s=""
-	if plr then
-		s=plr.x.." "
-	 ..plr.y..", "
-	 ..plr.speed_x.." "
-	 ..plr.speed_y..", "
-	 ..plr.remainder_x.." "
-	 ..plr.remainder_y
-	end
-	print(s,0,0,7)
-	printh(s)
-	rectfill(0,5,31,11,0)
-		print(#states.." "
- ..flr(stat(0)),0,6,states_on and 10 or 4)
+
+	sprint(join{current_player.x,current_player.y},0,0,7)
+	rprint(join{current_player.speed_x,current_player.speed_y},128,0,12)
+	rprint(join{current_player.remainder_x,current_player.remainder_y},128,6,14)
+
+	sprint(join{#states,flr(stat(0))},0,6,record_on and (stat(0)>=2000 and 8 or 10) or 4)
 
 	for i=1,#states do
-		showbtns(124-#states*4+i*4,122,state_btns[states[i]])
+		showbtns(124+(i-#states)*4,124,states[i][2])
 	end
-	
+
+	if msgtime>0 then
+		sprint(msg,0,118,7)
+		msgtime-=1
+	end
+
 	camera(camera_x,camera_y)
 end
 
-level_index=1
 __gfx__
 00000000626666660011110001111110011111000011110000000000000000000000000000000000000000006666666600000000422222220000000000000000
 00000000626666660111111011144411111111100111111000000000000000000000000000000000000000000311113000000000422222220800000000000080
