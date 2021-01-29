@@ -53,7 +53,7 @@ showoverlays=true
 
 `conf_level` and `conf_player` are the same as in cc2ed.p8 (to work on a separate level).
 
-`segments` is the list of segments that you can copy-paste right from cc2ed.p8 (remember: in lua, `[[...]]` is another way to denote a string `"..."`). The default value contains a segment that skips the intro card for you (level 0). Also, you can insert this segment at the beginning of every level that contains intros (3, 4, 5, 8):
+`segments` is the list of segments that you can copy-paste right from cc2ed.p8 (remember: in lua, `[[...]]` is another way to denote a string `"..."`). The default value contains a segment that skips the intro card for you (level 0). Also, you can insert this segment at the beginning of every level that contains intros (3, 4, 5, 8) (cc2ed.p8 skips intros):
 
 ```
 [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]],
