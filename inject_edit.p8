@@ -122,6 +122,10 @@ function restart_level()
 	--snap camera once
 	camera_modes[level.camera_mode](current_player.x,current_player.y)
 	snap_camera()
+	
+	--go back to normal restart
+	--for respawning
+	restart_level=_restart_level
 end
 
 function next_level()
