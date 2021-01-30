@@ -21,7 +21,9 @@ conf_player=nil
 
 `conf_level` is the level index (1-8), `conf_player` is either nil or the player coordinate table (see below).
 
-* To advance a frame, press the buttons you want held this frame at once and release them, or press **Space** to press no buttons. The tool won't let you advance past the end of the level, for convenience.
+* To advance a frame, press the buttons you want held this frame at once and release them, or press **Space** to press no buttons.
+* Press or hold **.** to repeat input from last frame - useful when you need to press the same buttons for a second or so.
+* The tool won't let you advance past the end of the level, for convenience.
 * Press **Backspace** to undo a frame.
 * Press **I** to copy the segment to the clipboard, it will look like `[[0 2 4 ...]],`, so you'll be able to paste it into `segments` in play.p8.
 * Press **O** to copy the player coordinates at the last frame to the clipboard, it will look like `{x=66,y=104,speed_x=2,speed_y=0,remainder_x=-0.4001,remainder_y=0,}`, so you can paste that into `conf_player` in edit.p8 and play.p8 and make the next segment from there.

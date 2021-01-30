@@ -160,6 +160,8 @@ function _update()
 	elseif btn()==0 and btns!=0 then
 		gamebtns=btns
 		btns=0
+	elseif kbkey=="." and #states>0 then
+		gamebtns=states[#states][2]
 	end
 
 	if gamebtns and not level_finished then
