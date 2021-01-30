@@ -68,7 +68,7 @@ level_index=
 {},{[36]=true,[37]=true,[46]=true},
 {},true,0,0,
 _update,_draw,restart_level,
-split"input_x,input_jump_pressed,input_grapple_pressed,axis_x_value,axis_x_turned,input_jump,input_grapple,freeze_time,infade,level_index,level_intro,camera_x,camera_y,show_score",
+split"input_x,input_jump_pressed,input_grapple_pressed,axis_x_value,axis_x_turned,input_jump,input_grapple,freeze_time,infade,level_index,level_intro,camera_x,camera_y,show_score,level_checkpoint",
 split"x,y,speed_x,speed_y,remainder_x,remainder_y",
 conf_level
 
