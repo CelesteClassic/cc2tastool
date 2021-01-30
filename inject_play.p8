@@ -25,13 +25,6 @@ function join(t)
 	return s
 end
 
-function copyvars(s,d,keys)
-	for k in all(keys) do
-		d[k]=s[k]
-	end
-	return d
-end
-
 function printvars(t,keys)
 	if(not t) return "[none]"
 	local s="{"
@@ -49,51 +42,38 @@ end
 function rprint(s,x,...)
 	sprint(s,x-#tostr(s)*4+1,...)
 end
-
-function hprint(s)
-	printh(s) printh(s,"seglog")
-end
-
 -->8
 --main
 
---setup
-_restart_level=restart_level
-function restart_level()
-	_restart_level()
+--load segments
+btnseq,seq_lvl,lvl_lengths,cur_lvl_len={},0,{},0
 
-	--global variable!
-	current_player=getplayer()
-	--to track for ui etc
-
-	if conf_player then
-		for k,v in pairs(conf_player) do
-			current_player[k]=v
-		end
-	end
-
-	--fix camera
-	camera_modes[level.camera_mode](current_player.x,current_player.y)
-	snap_camera()
-end
-
---join segments together
-btnseq={}
+add(segments,100) --hacky :(
 for i=1,#segments do
-	for b in all(split(segments[i]," ",true)) do
-		add(btnseq,b)
+	local seg=segments[i]
+	
+	if type(seg)=="number" then
+		seq_lvl=seg
+		if(seg>1) add(lvl_lengths,cur_lvl_len)
+		cur_lvl_len=0
+	elseif type(seg)=="string"
+	and seq_lvl>=conf_level then
+		for b in all(split(seg," ",true)) do
+			if type(b)=="number" then
+				add(btnseq,b)
+				cur_lvl_len+=1
+			end
+		end
 	end
 end
 
 playervars=split"x,y,speed_x,speed_y,remainder_x,remainder_y"
 
 poke(0x5f2d,1) --kbm
-btn_i=1
-pause=false
-skip=false
-msgtime=0
+btn_i,pause,skip,msgtime,level_index=1,false,false,0,conf_level
 
 function advance()
+	if((level_index==0 and titlescreen_flash) or level_intro>0) add(btnseq,0,btn_i)
 	poke(0x5f4c,btnseq[btn_i])
 	__update()
 	btn_i+=1
@@ -103,6 +83,8 @@ __update=_update
 function _update()
 	local kbkey
 	while(stat(30)) kbkey=stat(31)
+
+	current_player=getplayer()
 
 	if skip then
 		while btn_i<=#btnseq do
@@ -117,10 +99,14 @@ function _update()
 	if(kbkey=="t") pause=not pause
 	if(kbkey=="y") skip=true
 	if kbkey=="o" then
-		current_player=getplayer()
 		printh(printvars(current_player,playervars),"@clip")
 		msg="copied coordinates"
 		msgtime=60
+	end
+	if kbkey=="l" then
+		msg=join(lvl_lengths)
+		printh(msg,"@clip")
+		msgtime=120
 	end
 end
 
@@ -149,9 +135,6 @@ function _draw()
 
 	camera(camera_x,camera_y)
 end
-
-level_index=conf_level
-
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
