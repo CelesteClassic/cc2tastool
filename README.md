@@ -76,5 +76,5 @@ Note that play.p8 will automatically insert empty frames during all intros - tha
 You can also use these controls during playback:
 
 * **T** to pause/unpause, **Space** to advance a frame when paused - for debugging
-* **O** will copy the player coordinates to the clipboard, use it at the end if you lost them.
+* **O** will copy the player coordinates to the clipboard. This helps deal with any potential desyncs - play to the end, if there's desync from what you did in the editor - cut the end off, then play again and use this shortcut to make a new segment from there.
 * **L** will show and copy to the clipboard the list of total frame counts for each level, so you can compare them with each other.
