@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/db0z/cc2tastool/main/preview.gif">
 
-A set of tools to make Tool Assisted Speedruns for Celeste Classic 2. Tools run directly under PICO-8 as modded versions of the game, based upon the token-optimized smalleste2 by @Meep and @gonengazit. Storing and reloading states is implemented via deepcopying of the `objects` table, minus certain objects that are completely static, plus a few global variables. Because PICO-8 limits RAM usage, this means that large levels require you to work in relatively small segments (not too small, at least about 200 frames). Also, because of the hacky nature of this method, it seems to be still possible that segments don't play back correctly, but don't worry about it I fixed all of it 100%.
+A set of tools to make Tool Assisted Speedruns for Celeste Classic 2. Tools run directly under PICO-8 as modded versions of the game, based upon the token-optimized smalleste2 by @Meep and @gonengazit. Storing and reloading states is implemented via deepcopying of the `objects` table, minus certain objects that are completely static, plus a few global variables. Because PICO-8 limits RAM usage, this means that large levels require you to work in relatively small segments (not too small, at least about 200 frames).
 
 The tools are 2 PICO-8 carts: edit.p8 and play.p8
 
