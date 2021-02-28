@@ -21,15 +21,14 @@ conf_player=nil
 
 `conf_level` is the level index (1-8), `conf_player` is either nil or the player coordinate table (see below).
 
-* To advance a frame, press the buttons you want held this frame at once and release them, or press **Space** to press no buttons.
+* To insert a frame, press the buttons you want held this frame at once and release them, or press **Space** to press no buttons.
 * Press or hold **.** to repeat input from last frame - useful when you need to keep pressing the same buttons for a while.
 * The tool won't let you advance past the end of the level, for convenience.
 * Press **Backspace** to undo a frame.
+* Press **-** or **=** to scroll backward/forward; this lets you change inputs in the middle of the segment.
 * Press **I** to copy the segment to the clipboard, it will look like `[[0 2 4 ...]],`, so you'll be able to paste it into `segments` in play.p8.
 * Press **O** to copy the player coordinates at the last frame to the clipboard, it will look like `{x=66,y=104,speed_x=2,speed_y=0,remainder_x=-0.4001,remainder_y=0,}`, so you can paste that into `conf_player` in edit.p8 and make the next segment from there.
-* **I** and **O** also output *both* inputs and coordinates to the log file `seglog.p8l` and to the console, just in case.
 * The numbers at the top of the screen are as follows: white are player.x/y, blue are player.speed_x/y, pink are player.remainder_x/y, yellow/red are the number of states stored (i.e. current frame) (left) and current RAM usage (right). **Keep this number below 2048**; otherwise, PICO-8 will crash because that's what our lord and savior @zep intended for us.
-* You can also press **Tab** to go into real-time mode, but this isn't really useful for much and would mess up your states.
 
 (you might notice there's no snow or clouds in this tool, I cut them to save some more tokens)
 

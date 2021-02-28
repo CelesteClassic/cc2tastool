@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 29
+version 30
 __lua__
 --misc functions
 
@@ -60,13 +60,15 @@ end
 --every variable is init here
 --for tokenz
 nocopy,nocopy_sprs,
-states,record_on,btns,msgtime,
+states,state_i,
+btns,msgtime,
 __update,__draw,_restart_level,
 globals,
 playervars,
 level_index=
 {},{[36]=true,[37]=true,[46]=true},
-{},true,0,0,
+{},0,
+0,0,
 _update,_draw,restart_level,
 split"input_x,input_jump_pressed,input_grapple_pressed,axis_x_value,axis_x_turned,input_jump,input_grapple,freeze_time,infade,level_index,level_intro,camera_x,camera_y,show_score,level_checkpoint",
 split"x,y,speed_x,speed_y,remainder_x,remainder_y",
@@ -95,6 +97,20 @@ function deepcopy(orig,copies)
 		return orig
 	end
 end
+
+function load_state(st)
+	objects=deepcopy(st[1])
+	copyvars(st[3],_ENV,globals)
+end
+
+function save_state(b)
+	local o=deepcopy(objects)
+ return {o,b,copyvars(_ENV,{},globals)}
+end
+
+
+
+--adjustments to cc2 functions
 
 function restart_level()
 	_restart_level()
@@ -132,21 +148,26 @@ function next_level()
 	level_finished=true
 end
 
+function draw_time()
+end
+
 -->8
 --main
 
-function logall()
-	hprint("level: "..conf_level)
-	hprint("begin: "..printvars(conf_player,playervars))
-
-	local s="[["
-	for st in all(states) do
-		s=s..st[2].." "
-	end
-	hprint(sub(s,1,#s-1).."]],")
-
-	hprint("end: "..printvars(current_player,playervars))
-end
+--rip
+--needed tokens
+--function logall()
+--	hprint("level: "..conf_level)
+--	hprint("begin: "..printvars(conf_player,playervars))
+--
+--	local s="[["
+--	for st in all(states) do
+--		s=s..st[2].." "
+--	end
+--	hprint(sub(s,1,#s-1).."]],")
+--
+--	hprint("end: "..printvars(current_player,playervars))
+--end
 
 poke(0x5f2d,1) --kbm support
 --variables are in prev tab
@@ -157,29 +178,27 @@ function _update()
 	while stat(30) do kbkey=stat(31) end
 
 	local gamebtns=nil
-	if not record_on or kbkey==" " then
+	if kbkey==" " then
 		gamebtns=btn()
 	elseif btn()!=0 then
 		btns=btns|btn()&0xff
 	elseif btn()==0 and btns!=0 then
 		gamebtns=btns
 		btns=0
-	elseif kbkey=="." and #states>0 then
-		gamebtns=states[#states][2]
+	elseif kbkey=="." and state_i>0 then
+		gamebtns=states[state_i][2]
 	end
 
 	if gamebtns and not level_finished then
-		poke(0x5f4c, gamebtns)
-		if record_on then
-			local o=deepcopy(objects)
-			add(states,{o,gamebtns,copyvars(_ENV,{},globals)})
-		end
+		poke(0x5f4c,gamebtns)
+		add(states,save_state(gamebtns),state_i+1)
+		state_i+=1
 		__update()
 	elseif kbkey=="\b" then
-		if states[1] then
-			local st=deli(states,#states)
-			objects=deepcopy(st[1])
-			copyvars(st[3],_ENV,globals)
+		if state_i>0 then
+			local st=deli(states,state_i)
+			load_state(st)
+			state_i-=1
 		end
 		level_finished=false
 	end
@@ -187,10 +206,8 @@ function _update()
 	--this is kinda important
 	current_player=getplayer()
 
-	record_on=record_on!=(kbkey=="\t")
-
 	if kbkey=="i" then
-		logall()
+--		logall()
 		local s="[["
 		for st in all(states) do
 			s=s..st[2].." "
@@ -199,10 +216,24 @@ function _update()
 		msg="copied inputs"
 		msgtime=60
 	elseif kbkey=="o" then
-		logall()
+--		logall()
 		printh(printvars(current_player,playervars),"@clip")
 		msg="copied coordinates"
 		msgtime=60
+	elseif kbkey=="-" then
+		if state_i>0 then
+			load_state(states[state_i])
+			states[state_i][1]=nil
+			state_i-=1
+		end
+	elseif kbkey=="=" then
+		if state_i<#states then
+			state_i+=1
+			gamebtns=states[state_i][2]
+			poke(0x5f4c,gamebtns)
+			states[state_i]=save_state(gamebtns)
+			__update()
+		end
 	end
 end
 
@@ -218,11 +249,13 @@ function _draw()
 	rprint(join{current_player.speed_x,current_player.speed_y},128,0,12)
 	rprint(join{current_player.remainder_x,current_player.remainder_y},128,6,14)
 
-	sprint(join{#states,flr(stat(0))},0,6,record_on and (stat(0)>=2000 and 8 or 10) or 4)
+	sprint(join{state_i.."/"..#states,flr(stat(0))},0,6,stat(0)>=2000 and 8 or 10)
 
+	local x=128-4*min(#states-state_i,16)
 	for i=1,#states do
-		showbtns(124+(i-#states)*4,124,states[i][2])
+		showbtns(x-4+(i-state_i)*4,124,states[i][2])
 	end
+	line(x,124,x,128,7)
 
 	if msgtime>0 then
 		sprint(msg,0,118,7)
