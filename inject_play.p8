@@ -103,15 +103,22 @@ function _update()
 	end
 	if(kbkey=="t") pause=not pause
 	if(kbkey=="y") skip=true
-	if kbkey=="o" then
+	if kbkey=="i" then
+		local s="[["
+		for i=1,btn_i-1 do
+			s=s..btnseq[i].." "
+		end
+		printh(sub(s,1,#s-1).."]],","@clip")
+		msg="copied inputs"
+		msgtime=60
+	elseif kbkey=="o" then
 		printh(printvars(current_player,playervars),"@clip")
 		msg="copied coordinates"
 		msgtime=60
-	end
-	if kbkey=="l" then
+	elseif kbkey=="l" then
 		msg=join(lvl_lengths)
 		printh(msg,"@clip")
-		msgtime=120
+		msgtime=300
 	end
 end
 

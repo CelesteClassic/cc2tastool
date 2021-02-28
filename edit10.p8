@@ -1,10 +1,11 @@
 pico-8 cartridge // http://www.pico-8.com
-version 29
+version 30
 __lua__
 --config
 
 conf_level=1
 conf_player=nil
+preload_seg=[[]]
 -->8
 --smalleste2 (editor version)
 --some gfx cut

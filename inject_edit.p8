@@ -169,6 +169,15 @@ end
 --	hprint("end: "..printvars(current_player,playervars))
 --end
 
+--preload segment
+if preload_seg then
+	for b in all(split(preload_seg," ",true)) do
+		if type(b)=="number" then
+			add(states,{nil,b})
+		end
+	end
+end
+
 poke(0x5f2d,1) --kbm support
 --variables are in prev tab
 

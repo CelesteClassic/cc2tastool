@@ -5,6 +5,7 @@ __lua__
 
 conf_level=1
 conf_player=nil
+preload_seg=[[]]
 -->8
 --smalleste2 1.1 editor version
 --some gfx cut
