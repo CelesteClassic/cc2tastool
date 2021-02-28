@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 29
+version 30
 __lua__
 --config
 
@@ -267,10 +267,6 @@ function approach(x,target,max_delta)
   return x<target and min(x+max_delta,target) or max(x-max_delta,target)
 end
 
-function clamp(val,low,high)
-  return max(low,min(high,val))
-end
-
 function psfx(id,off,len,lock)
   if sfx_timer<=0 or lock then
     sfx(id,3,off,len)
@@ -398,15 +394,15 @@ c_offset=0
 camera_modes={
     -- 1: intro
     function (px,py)
-      camera_target_x=px<42 and 0 or clamp(px-48,40,level.width*8-128)
+      camera_target_x=px<42 and 0 or mid(px-48,40,level.width*8-128)
     end,
     -- 2: intro 2
     function (px,py)
-      camera_target_x,camera_target_y=px<120 and 0 or px>136 and 128 or px-64,clamp(py-64,0,level.height*8-128)
+      camera_target_x,camera_target_y=px<120 and 0 or px>136 and 128 or px-64,mid(py-64,0,level.height*8-128)
     end,
     -- 3: level 1
     function (px,py)
-      camera_target_x,camera_target_y=clamp(px-56,0,level.width*8-128),py<level.camera_barrier_y*8+3 and 0 or level.camera_barrier_y*8
+      camera_target_x,camera_target_y=mid(px-56,0,level.width*8-128),py<level.camera_barrier_y*8+3 and 0 or level.camera_barrier_y*8
       for i,b in ipairs(level.camera_barriers_x) do
         camera_x_barrier(b,px,py)
       end
@@ -419,11 +415,11 @@ camera_modes={
       if py%128>4 and py%128<124 then
         py=(py\128)*128+64
       end
-      camera_target_x,camera_target_y=clamp(px-64,0,level.width*8-128),clamp(py-64,0,level.height*8-128)
+      camera_target_x,camera_target_y=mid(px-64,0,level.width*8-128),mid(py-64,0,level.height*8-128)
     end,
     -- 5: level 3-1
     function (px,py)
-      camera_target_x=clamp(px-32,0,level.width*8-128)
+      camera_target_x=mid(px-32,0,level.width*8-128)
     end,
     -- 6: level 3-2
     function (px,py)
@@ -436,7 +432,7 @@ camera_modes={
         c_flag=true
         c_offset=96
       end
-      camera_target_x=clamp(px-c_offset,0,level.width*8-128)
+      camera_target_x=mid(px-c_offset,0,level.width*8-128)
       for i,b in ipairs(level.camera_barriers_x) do
         camera_x_barrier(b,px,py)
       end
@@ -447,11 +443,11 @@ camera_modes={
     --7: level 3-3
     function (px,py)
       c_offset=px>420 and (px<436 and px-388 or px>808 and 48-min(16,px-808) or 48) or 32
-      camera_target_x=clamp(px-c_offset,0,level.width*8-128)
+      camera_target_x=mid(px-c_offset,0,level.width*8-128)
     end,
     --8: end
     function (px,py)
-      camera_target_y=clamp(py-32,0,level.height*8-128)
+      camera_target_y=mid(py-32,0,level.height*8-128)
     end
 }
 
@@ -461,7 +457,7 @@ function snap_camera()
 end
 
 function tile_y(py)
-  return clamp(py\8,0,level.height-1)--max(0,min(py\8,level.height-1))
+  return mid(py\8,0,level.height-1)--max(0,min(py\8,level.height-1))
 end
 
 function goto_level(index)
@@ -534,15 +530,13 @@ function update_input()
     else
       axis_x_turned,axis_x_value,input_x=false,-1,-1
     end
-  elseif btn(1) then
-    axis_x_turned,axis_x_value,input_x=false,1,1
   else
-    axis_x_turned,axis_x_value,input_x=false,0,0
+    local b=btn(1) and 1 or 0
+    axis_x_turned,axis_x_value,input_x=false,b,b
   end
   -- input_jump
   local jump=btn(4)
   input_jump_pressed,input_jump=jump and not input_jump and 4 or jump and max(0,input_jump_pressed-1) or 0,jump
-
   -- input_grapple
   local grapple=btn(5)
   input_grapple_pressed,input_grapple=grapple and not input_grapple and 4 or grapple and max(0,input_grapple_pressed-1) or 0,grapple
@@ -795,11 +789,7 @@ function snowball.on_collide_x(self,moved,total)
   psfx(17,0,2)
   return true
 end
-function snowball.on_collide_y(self,moved,total)
-  if self.speed_y<0 then
-    self.speed_y,self.remainder_y=0,0
-    return true
-  end
+function snowball.on_collide_y(self)--,moved,total)
   if self.speed_y>=4 then
     self.speed_y=-2
     psfx(17,0,2)
@@ -830,12 +820,10 @@ function snowball.bounce_overlaps(self,o)
   if self.speed_x~=0 then
     self.hit_w,self.hit_x=12,-2
     local ret=self:overlaps(o)
-    self.hit_w=8
-    self.hit_x=0
+    self.hit_w,self.hit_x=8,0
     return ret
-  else
-    return self:overlaps(o)
   end
+  return self:overlaps(o)
 end
 function snowball.contains(self,px,py)
   return px>=self.x and px<self.x+8 and py>=self.y-1 and py<self.y+10
@@ -914,7 +902,7 @@ function berry.update(self)
 
     if self.player:check_solid(0,1) and self.player.state~=99 then self.ground+=1 else self.ground=0 end
 
-    if self.ground>3 or self.player.x>level.width*8-16 or self.player.last_berry~=self then
+    if self.ground>3 or self.player.x>level.width*8-7 or self.player.last_berry~=self then
       psfx(8,8,8,20)
       collected[self.id]=true
       berry_count+=1
@@ -1362,14 +1350,8 @@ function player.update(self)
         if mode==2 then
           self.grapple_x,self.grapple_y=self.grapple_hit.x+4,self.grapple_hit.y+4
         elseif mode==3 then
-          self.grapple_hit.held=true
+          self.grapple_hit.held,grabbed=true,true
         end
-
-        if self.grapple_hit and self.grapple_hit.on_grappled then
-          self.grapple_hit:on_grappled()
-          grabbed=true
-        end
-
         self.state,self.grapple_wave,self.grapple_boost,self.freeze=mode == 3 and 12 or 11,2,false,2
         psfx(14,0,5)
         break
@@ -1642,10 +1624,10 @@ function player.draw(self)
 
   -- death fx
   if self.state==99 then
-    local e,dx,dy=self.wipe_timer/10,mid(camera_x,self.x,camera_x+128),mid(camera_y,self.y-4,camera_y+128)
+    local e=self.wipe_timer/10
     if e<=1 then
       for i=0,7 do
-        circfill(dx+cos(i/8)*32*e,dy+sin(i/8)*32*e,(1-e)*8,10)
+        circfill(mid(camera_x,self.x,camera_x+128)+cos(i/8)*32*e,mid(camera_y,self.y-4,camera_y+128)+sin(i/8)*32*e,(1-e)*8,10)
       end
     end
     return
@@ -1753,12 +1735,10 @@ function px9_decomp(x0,y0,src,vget,vset)
   -- header
   local w,h_1,
     eb,el,pr,
-    x,y,
     splen,
     predict=
     gnp"1",gnp"0",
     gnp"1",{},{},
-    0,0,
     0
     --,nil
 
