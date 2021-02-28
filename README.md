@@ -78,3 +78,5 @@ You can also use these controls during playback:
 * **T** to pause/unpause, **Space** to advance a frame when paused - for debugging
 * **O** will copy the player coordinates to the clipboard. This helps deal with any potential desyncs - play to the end, if there's desync from what you did in the editor - cut the end off, then play again and use this shortcut to make a new segment from there.
 * **L** will show and copy to the clipboard the list of total frame counts for each level, so you can compare them with each other.
+
+Note: there is also a cart named `play11_verifier.p8`; the difference is that `play11.p8` is based upon the token optimized smalleste2 to obtain enough tokens to insert the playback code, while `play11_verifier.p8` is based upon the original version of the game to make sure playback is 100% accurate, as smalleste2 could've accidentally changed the mechanics in some minor way; to get tokens, however, a lot of graphics are cut; this shouldn't impact gameplay at all.
