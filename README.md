@@ -17,9 +17,12 @@ Open the first tab of code and you'll see this:
 
 conf_level=1
 conf_player=nil
+preload_seg=[[]]
 ```
 
 `conf_level` is the level index (1-8), `conf_player` is either nil or the player coordinate table (see below).
+
+`preload_seg` is a segment that will be loaded, obtained from this editor or `play.p8` (make sure to remove the trailing comma).
 
 * To insert a frame, press the buttons you want held this frame at once and release them, or press **Space** to press no buttons.
 * Press or hold **.** to repeat input from last frame - useful when you need to keep pressing the same buttons for a while.
@@ -75,7 +78,8 @@ Note that play.p8 will automatically insert empty frames during all intros - tha
 You can also use these controls during playback:
 
 * **T** to pause/unpause, **Space** to advance a frame when paused - for debugging
-* **O** will copy the player coordinates to the clipboard. This helps deal with any potential desyncs - play to the end, if there's desync from what you did in the editor - cut the end off, then play again and use this shortcut to make a new segment from there.
+* **I** will copy all button inputs up to the current frame to the clipboard - this can be used to cut off a segment at a certain point, insert it into the editor and keep working from there. Useful for working around desyncs.
+* **O** will copy the player coordinates to the clipboard - same.
 * **L** will show and copy to the clipboard the list of total frame counts for each level, so you can compare them with each other.
 
 Note: there is also a cart named `play11_verifier.p8`; the difference is that `play11.p8` is based upon the token optimized smalleste2 to obtain enough tokens to insert the playback code, while `play11_verifier.p8` is based upon the original version of the game to make sure playback is 100% accurate, as smalleste2 could've accidentally changed the mechanics in some minor way; to get tokens, however, a lot of graphics are cut; this shouldn't impact gameplay at all.
